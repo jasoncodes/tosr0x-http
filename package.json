@@ -1,0 +1,10 @@
+{
+  "name": "tosr0x-http",
+  "version": "0.0.2",
+  "bin": {
+    "tosr0x-http": "bin/tosr0x-http"
+  },
+  "dependencies": {
+    "coffee-script": "^1.10.0"
+  }
+}
