@@ -5,6 +5,7 @@
     "tosr0x-http": "bin/tosr0x-http"
   },
   "dependencies": {
-    "coffee-script": "^1.10.0"
+    "coffee-script": "^1.10.0",
+    "yargs": "^5.0.0"
   }
 }
