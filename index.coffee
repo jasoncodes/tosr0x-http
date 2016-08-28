@@ -75,6 +75,43 @@ checkModuleId = ->
         socket.destroy()
         return
 
+getTemperature = (callback) ->
+  if !connected
+    callback?(new Error('not connected'))
+    return
+  socket.write 'a'
+  queue.push
+    length: 2
+    callback: (error, data) ->
+      if error
+        callback?(error)
+      else
+        temperature = (data[0]*256 + data[1])/16
+        callback?(null, temperature)
+
+getStates = (callback) ->
+  if !connected
+    callback?(new Error('not connected'))
+  socket.write '['
+  queue.push
+    length: 1
+    callback: (error, data) ->
+      if error
+        callback?(error)
+      else
+        states = {}
+        for i in [0..7]
+          states[i+1] = (data[0] & (1 << i)) != 0
+        callback?(null, states)
+
+setState = (relay, state) ->
+  if !connected
+    throw new Error('not connected')
+  if relay < 0 || relay > 8
+    throw new Error('relay out of range')
+  cmd = if state then 100 else 110
+  socket.write String.fromCharCode(cmd + relay)
+
 socket = new net.Socket()
 connected = false
 lastConnectErrorMessage = null
