@@ -55,6 +55,19 @@ expectHello = ->
         socket.destroy()
         return
 
+checkModuleId = ->
+  socket.write 'Z'
+  queue.push
+    length: 2
+    callback: (error, data) ->
+      if error
+        console.log "module ID check error: #{error}"
+        return
+      unless data[0] == 15
+        console.log 'Expected TOSR0X module ID'
+        socket.destroy()
+        return
+
 socket = new net.Socket()
 connected = false
 lastConnectErrorMessage = null
@@ -71,6 +84,7 @@ socket.on 'connect', ->
   lastConnectErrorMessage = null
   initQueue()
   expectHello()
+  checkModuleId()
 socket.on 'close', ->
   if connected
     console.log 'device disconnected'
