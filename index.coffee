@@ -43,6 +43,13 @@ errorQueue = (message) ->
     item = queue.shift()
     item.callback?(new Error(message))
 
+idleCheck = ->
+  socket.setTimeout 5000, ->
+    if queue.length
+      errorQueue('timeout')
+      socket.destroy()
+    idleCheck()
+
 expectHello = ->
   queue.push
     length: 7
@@ -85,6 +92,7 @@ socket.on 'connect', ->
   initQueue()
   expectHello()
   checkModuleId()
+  idleCheck()
 socket.on 'close', ->
   if connected
     console.log 'device disconnected'
