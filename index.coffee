@@ -107,3 +107,7 @@ socket.on 'error', (error) ->
 connectToDevice = ->
   socket.connect argv['device-port'], argv['device-host']
 connectToDevice()
+
+setInterval ->
+  checkModuleId() if connected
+, 30000
