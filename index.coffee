@@ -1,5 +1,7 @@
 yargs = require('yargs')
 net = require('net')
+express = require('express')
+bodyParser = require('body-parser')
 
 argv = yargs
   .env('TOSR0X_HTTP')
@@ -148,3 +150,14 @@ connectToDevice()
 setInterval ->
   checkModuleId() if connected
 , 30000
+
+app = express()
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded(extended: true))
+
+router = express.Router()
+app.use '/', router
+
+app.listen argv['listen-port'], argv['listen-host'], ->
+  console.log 'started'
