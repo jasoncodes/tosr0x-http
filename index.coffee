@@ -159,5 +159,26 @@ app.use(bodyParser.urlencoded(extended: true))
 router = express.Router()
 app.use '/', router
 
+router.get '/status', (request, response) ->
+  getTemperature (error, temperature) ->
+    if error
+      response.status(503).json(error: error.message)
+    else
+      getStates (error, states) ->
+        if error
+          response.status(503).json(error: error.message)
+        else
+          response.status(200).json(
+            temperature: temperature
+            states: states
+          )
+
+router.post '/update', (request, response) ->
+  for relay, state of request.body
+    relay = parseInt(relay, 10)
+    state = state == true || state == 'true'
+    setState relay, state
+  response.status(204).send()
+
 app.listen argv['listen-port'], argv['listen-host'], ->
   console.log 'started'
