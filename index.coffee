@@ -1,3 +1,4 @@
+_ = require('lodash')
 yargs = require('yargs')
 net = require('net')
 express = require('express')
@@ -175,18 +176,40 @@ router.get '/status', (request, response) ->
           )
 
 parseRelayStates = (states) ->
+  unless _.isPlainObject(states)
+    throw new Error('states must be an object')
   _.map states, (state, relay) ->
     relay: parseRelayNumber(relay)
     state: parseStateValue(state)
 
 parseRelayNumber = (value) ->
-  parseInt(value, 10)
+  relay = Number(value)
+  if Number.isNaN(relay)
+    throw new Error('relay must be a number')
+  unless Number.isInteger(relay)
+    throw new Error('relay must be an integer')
+  unless relay >= 0 and relay <= 8
+    throw new Error('relay out of range')
+  relay
 
 parseStateValue = (value) ->
-  value == true || value == 'true'
+  if typeof(value) == 'string'
+    value.toLowerCase()
+
+  switch value
+    when true, 'true'
+      true
+    when false, 'false'
+      false
+    else
+      throw new Error('invalid state value')
 
 router.post '/update', (request, response) ->
-  entries = parseRelayStates(request.body)
+  try
+    entries = parseRelayStates(request.body)
+  catch error
+    response.status(400).json(error: error.message)
+    return
 
   for entry in entries
     setState entry.relay, entry.state

@@ -212,6 +212,11 @@
       "from": "load-json-file@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/load-json-file/-/load-json-file-1.1.0.tgz"
     },
+    "lodash": {
+      "version": "4.15.0",
+      "from": "lodash@latest",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.15.0.tgz"
+    },
     "lodash.assign": {
       "version": "4.2.0",
       "from": "lodash.assign@>=4.2.0 <5.0.0",
