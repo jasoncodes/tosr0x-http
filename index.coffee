@@ -89,6 +89,7 @@ getTemperature = (callback) ->
         callback?(error)
       else
         temperature = (data[0]*256 + data[1])/16
+        temperature = Math.round(temperature * 10) / 10
         callback?(null, temperature)
 
 getStates = (callback) ->
