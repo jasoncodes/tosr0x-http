@@ -174,11 +174,23 @@ router.get '/status', (request, response) ->
             states: states
           )
 
+parseRelayStates = (states) ->
+  _.map states, (state, relay) ->
+    relay: parseRelayNumber(relay)
+    state: parseStateValue(state)
+
+parseRelayNumber = (value) ->
+  parseInt(value, 10)
+
+parseStateValue = (value) ->
+  value == true || value == 'true'
+
 router.post '/update', (request, response) ->
-  for relay, state of request.body
-    relay = parseInt(relay, 10)
-    state = state == true || state == 'true'
-    setState relay, state
+  entries = parseRelayStates(request.body)
+
+  for entry in entries
+    setState entry.relay, entry.state
+
   response.status(204).send()
 
 app.listen argv['listen-port'], argv['listen-host'], ->
