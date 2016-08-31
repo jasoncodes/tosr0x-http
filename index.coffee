@@ -212,7 +212,11 @@ router.post '/update', (request, response) ->
     return
 
   for entry in entries
-    setState entry.relay, entry.state
+    try
+      setState entry.relay, entry.state
+    catch error
+      response.status(503).json(error: error.message)
+      return
 
   response.status(204).send()
 
