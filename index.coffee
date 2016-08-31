@@ -222,6 +222,13 @@ router.post '/update', (request, response) ->
     if error
       response.status(503).json(error: error.message)
     else
+      for entry in entries
+        if entry.relay == 0 && !!_.find(_.values(states)) != entry.state
+          response.status(422).json(error: "Could not change relays to #{entry.state}")
+          return
+        if entry.relay > 0 && states[entry.relay] != entry.state
+          response.status(422).json(error: "Could not change relay #{entry.relay} to #{entry.state}")
+          return
       response.status(204).send()
 
 app.listen argv['listen-port'], argv['listen-host'], ->
