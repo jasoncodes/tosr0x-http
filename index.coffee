@@ -218,7 +218,11 @@ router.post '/update', (request, response) ->
       response.status(503).json(error: error.message)
       return
 
-  response.status(204).send()
+  getStates (error, states) ->
+    if error
+      response.status(503).json(error: error.message)
+    else
+      response.status(204).send()
 
 app.listen argv['listen-port'], argv['listen-host'], ->
   console.log 'started'
