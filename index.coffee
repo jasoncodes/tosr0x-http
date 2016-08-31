@@ -211,6 +211,11 @@ router.post '/update', (request, response) ->
     response.status(400).json(error: error.message)
     return
 
+  allEntry = _.find(entries, (entry) -> entry.relay == 0)
+  if allEntry && _.find(entries, (entry) -> entry.state != allEntry.state)
+    response.status(409).json(error: 'conflicting state changes')
+    return
+
   for entry in entries
     try
       setState entry.relay, entry.state
