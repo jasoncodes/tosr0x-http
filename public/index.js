@@ -55,9 +55,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var relay = event.target.dataset.number;
     if (relay) {
       var currentState = event.target.classList.contains('state-true');
+      var newState = !currentState
 
       var newStates = {}
-      newStates[relay] = !currentState;
+      newStates[relay] = newState;
 
       var xhr = new XMLHttpRequest()
       xhr.open('POST', '/update')
