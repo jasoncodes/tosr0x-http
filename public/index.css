@@ -1,0 +1,36 @@
+body {
+  font-family: sans-serif;
+}
+
+ol.relays {
+  text-align: center;
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 20em;
+  font-size: 30px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+}
+
+ol.relays li {
+  display: inline-block;
+  margin: 0.5em;
+  width: 3em;
+  height: 3em;
+  border-radius: 3em;
+  text-align: center;
+  line-height: 3em;
+  border: 2px solid #ccc;
+  color: #ccc;
+  cursor: pointer;
+}
+ol.relays li.state-true {
+  border-color: red;
+  color: white;
+  background: red;
+}
+ol.relays li.state-false {
+  border-color: black;
+  color: black;
+}
