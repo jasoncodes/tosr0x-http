@@ -52,10 +52,14 @@ setInterval(refreshStatus, 1000);
 
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('.relays').addEventListener('click', function(event) {
+    event.preventDefault()
     var relay = event.target.dataset.number;
     if (relay) {
       var currentState = event.target.classList.contains('state-true');
       var newState = !currentState
+
+      event.target.classList.toggle('state-true', newState);
+      event.target.classList.toggle('state-false', !newState);
 
       var newStates = {}
       newStates[relay] = newState;
