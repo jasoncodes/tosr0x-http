@@ -7,6 +7,8 @@ bodyParser = require('body-parser')
 argv = yargs
   .env('TOSR0X_HTTP')
   .usage('Usage: $0 [options]')
+  .strict()
+  .demandCommand(0, 0, '', 'Invalid argument')
   .help('help')
   .option('device-host'
     describe: 'Hostname/IP address of TOSR0x WiFly device'
