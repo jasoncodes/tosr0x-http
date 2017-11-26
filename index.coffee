@@ -169,13 +169,13 @@ socket.on 'data', (data) ->
     bufferedData = bufferedData.slice(item.length)
     item.callback?(null, data)
 socket.on 'connect', ->
-  device.emit 'connect'
   connected = true
   lastConnectErrorMessage = null
   initQueue()
   expectHello()
   checkModuleId()
   idleCheck()
+  device.emit 'connect'
 socket.on 'close', ->
   if connected
     device.emit 'disconnect'
