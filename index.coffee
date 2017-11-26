@@ -322,6 +322,13 @@ if argv['mqtt-host']
       getTemperature()
   , 1000
 
+  client.on 'connect', ->
+    lastStatuses = {}
+    idleTicksRemaining = 0
+  device.on 'connect', ->
+    lastStatuses = {}
+    idleTicksRemaining = 0
+
   publishStatus('online', 'false')
   device.on 'connect', ->
     publishStatus('online', 'true')
