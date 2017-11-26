@@ -290,6 +290,10 @@ if argv['mqtt-host']
     username: argv['mqtt-user']
     password: argv['mqtt-pass']
     clientId: "tosr0x-#{os.hostname().split('.')[0]}-#{process.pid}"
+    will:
+      topic: "#{argv['mqtt-prefix']}/status/online"
+      payload: 'false'
+      retain: true
 
   client.on 'connect', ->
     console.log 'mqtt connected'
@@ -297,3 +301,16 @@ if argv['mqtt-host']
     console.log 'mqtt offline'
   client.on 'error', ->
     console.log 'mqtt error'
+
+  publishStatus = (key, value) ->
+    client.publish(
+      "#{argv['mqtt-prefix']}/status/#{key}"
+      value
+      retain: true
+    )
+
+  publishStatus('online', 'false')
+  device.on 'connect', ->
+    publishStatus('online', 'true')
+  device.on 'disconnect', ->
+    publishStatus('online', 'false')
