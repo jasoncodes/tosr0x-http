@@ -314,6 +314,14 @@ if argv['mqtt-host']
       retain: true
     )
 
+  idleTicksRemaining = 0
+  setInterval ->
+    idleTicksRemaining -= 1
+    if idleTicksRemaining <= 0 && connected
+      getStates()
+      getTemperature()
+  , 1000
+
   publishStatus('online', 'false')
   device.on 'connect', ->
     publishStatus('online', 'true')
@@ -321,6 +329,7 @@ if argv['mqtt-host']
     publishStatus('online', 'false')
   device.on 'temperature', (temperature) ->
     publishStatus "temperature", "#{temperature}"
+    idleTicksRemaining = 10
   device.on 'states', (states) ->
     for relay, state of states
       publishStatus "relay/#{relay}", "#{state}"
