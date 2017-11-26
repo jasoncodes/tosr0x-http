@@ -123,6 +123,7 @@ getTemperature = (callback) ->
       else
         temperature = (data[0]*256 + data[1])/16
         temperature = Math.round(temperature * 10) / 10
+        device.emit 'temperature', temperature
         callback?(null, temperature)
 
 getStates = (callback) ->
@@ -138,6 +139,7 @@ getStates = (callback) ->
         states = {}
         for i in [0..7]
           states[i+1] = (data[0] & (1 << i)) != 0
+        device.emit 'states', states
         callback?(null, states)
 
 setState = (relay, state) ->
