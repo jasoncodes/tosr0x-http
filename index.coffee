@@ -6,6 +6,7 @@ bodyParser = require('body-parser')
 os = require('os')
 process = require('process')
 mqtt = require('mqtt')
+mqtt_regex = require('mqtt-regex')
 
 argv = yargs
   .env('TOSR0X_HTTP')
@@ -296,6 +297,19 @@ if argv['mqtt-host']
       topic: "#{argv['mqtt-prefix']}/status/online"
       payload: 'false'
       retain: true
+
+  client.subscribe "#{argv['mqtt-prefix']}/control/#"
+  relay_control_topic = mqtt_regex("#{argv['mqtt-prefix']}/control/relay/+relay").exec
+  client.on 'message', (topic, payload) ->
+    if params = relay_control_topic(topic)
+      try
+        relay = parseRelayNumber(params.relay)
+        state = parseStateValue(payload.toString())
+      catch error
+        console.log("Error parsing #{topic}=#{payload.toString()}: #{error.message}")
+        return
+      setState relay, state
+      getStates()
 
   client.on 'connect', ->
     console.log 'mqtt connected'

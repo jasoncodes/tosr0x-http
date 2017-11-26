@@ -180,6 +180,10 @@ escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
 
+escape-string-regexp@^1.0.2:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
+
 etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
@@ -508,6 +512,12 @@ mqtt-packet@^5.4.0:
     inherits "^2.0.3"
     process-nextick-args "^1.0.7"
     safe-buffer "^5.1.0"
+
+mqtt-regex@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/mqtt-regex/-/mqtt-regex-1.0.5.tgz#2da2d9c7ba4574b5340db661ceb6e103e5de454d"
+  dependencies:
+    escape-string-regexp "^1.0.2"
 
 mqtt@^2.14.0:
   version "2.14.0"
