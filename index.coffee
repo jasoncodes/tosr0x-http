@@ -316,3 +316,8 @@ if argv['mqtt-host']
     publishStatus('online', 'true')
   device.on 'disconnect', ->
     publishStatus('online', 'false')
+  device.on 'temperature', (temperature) ->
+    publishStatus "temperature", "#{temperature}"
+  device.on 'states', (states) ->
+    for relay, state of states
+      publishStatus "relay/#{relay}", "#{state}"
