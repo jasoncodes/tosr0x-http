@@ -304,7 +304,10 @@ if argv['mqtt-host']
   client.on 'error', ->
     console.log 'mqtt error'
 
+  lastStatuses = {}
   publishStatus = (key, value) ->
+    return if lastStatuses[key] is value
+    lastStatuses[key] = value
     client.publish(
       "#{argv['mqtt-prefix']}/status/#{key}"
       value
