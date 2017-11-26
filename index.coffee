@@ -3,6 +3,9 @@ yargs = require('yargs')
 net = require('net')
 express = require('express')
 bodyParser = require('body-parser')
+os = require('os')
+process = require('process')
+mqtt = require('mqtt')
 
 argv = yargs
   .env('TOSR0X_HTTP')
@@ -33,6 +36,33 @@ argv = yargs
     requiresArg: true
     default: 8020
   )
+  .option('mqtt-host'
+    describe: 'MQTT hostname'
+    type: 'string'
+    requiresArg: true
+  )
+  .option('mqtt-port'
+    describe: 'MQTT port'
+    type: 'number'
+    requiresArg: true
+    default: 1883
+  )
+  .option('mqtt-user'
+    describe: 'MQTT username'
+    type: 'string'
+    requiresArg: true
+  )
+  .option('mqtt-pass'
+    describe: 'MQTT password'
+    type: 'string'
+    requiresArg: true
+  )
+  .option('mqtt-prefix'
+    describe: 'MQTT topic prefix'
+    type: 'string'
+    requiresArg: true
+  )
+  .implies('mqtt-host', 'mqtt-prefix')
   .argv
 
 bufferedData = null
@@ -242,3 +272,18 @@ router.post '/update', (request, response) ->
 
 app.listen argv['listen-port'], argv['listen-host'], ->
   console.log 'started'
+
+if argv['mqtt-host']
+  client = mqtt.connect
+    host: argv['mqtt-host']
+    port: argv['mqtt-port']
+    username: argv['mqtt-user']
+    password: argv['mqtt-pass']
+    clientId: "tosr0x-#{os.hostname().split('.')[0]}-#{process.pid}"
+
+  client.on 'connect', ->
+    console.log 'mqtt connected'
+  client.on 'offline', ->
+    console.log 'mqtt offline'
+  client.on 'error', ->
+    console.log 'mqtt error'
