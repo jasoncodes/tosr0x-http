@@ -148,6 +148,16 @@ setState = (relay, state) ->
   cmd = if state then 100 else 110
   socket.write String.fromCharCode(cmd + relay)
 
+EventEmitter = require('events')
+class Device extends EventEmitter
+device = new Device
+
+device.on 'connect', ->
+  console.log 'device connected'
+
+device.on 'disconnect', ->
+  console.log 'device disconnected'
+
 socket = new net.Socket()
 connected = false
 lastConnectErrorMessage = null
@@ -159,7 +169,7 @@ socket.on 'data', (data) ->
     bufferedData = bufferedData.slice(item.length)
     item.callback?(null, data)
 socket.on 'connect', ->
-  console.log 'device connected'
+  device.emit 'connect'
   connected = true
   lastConnectErrorMessage = null
   initQueue()
@@ -168,7 +178,7 @@ socket.on 'connect', ->
   idleCheck()
 socket.on 'close', ->
   if connected
-    console.log 'device disconnected'
+    device.emit 'disconnect'
   connected = false
   errorQueue('disconnected')
   setTimeout connectToDevice, 5000
