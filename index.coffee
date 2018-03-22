@@ -79,12 +79,18 @@ errorQueue = (message) ->
     item = queue.shift()
     item.callback?(new Error(message))
 
-idleCheck = ->
-  socket.setTimeout 5000, ->
+
+timeoutTimer = null
+resetTimeoutCheck = ->
+  if timeoutTimer
+    clearTimeout timeoutTimer
+    timeoutTimer = null
+  timeoutTimer = setTimeout ->
     if queue.length
       errorQueue('timeout')
       socket.destroy()
-    idleCheck()
+    resetTimeoutCheck()
+  , 5000
 
 expectHello = ->
   queue.push
@@ -166,6 +172,7 @@ connected = false
 lastConnectErrorMessage = null
 socket.on 'data', (data) ->
   bufferedData = Buffer.concat([bufferedData, data])
+  resetTimeoutCheck()
   while queue.length > 0 and bufferedData.length >= queue[0].length
     item = queue.shift()
     data = bufferedData.slice(0, item.length)
@@ -177,7 +184,7 @@ socket.on 'connect', ->
   initQueue()
   expectHello()
   checkModuleId()
-  idleCheck()
+  resetTimeoutCheck()
   device.emit 'connect'
 socket.on 'close', ->
   if connected
