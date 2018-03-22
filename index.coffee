@@ -315,8 +315,12 @@ if argv['mqtt-host']
       catch error
         console.log("Error parsing #{topic}=#{payload.toString()}: #{error.message}")
         return
-      setState relay, state
-      getStates()
+      try
+        setState relay, state
+        getStates()
+      catch error
+        console.log("Error setting #{relay}=#{state}: #{error.message}")
+        return
 
   client.on 'connect', ->
     console.log 'mqtt connected'
