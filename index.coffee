@@ -74,6 +74,14 @@ initQueue = ->
   queue = []
 initQueue()
 
+enqueue = (item) ->
+  if !connected
+    item.callback?(new Error('not connected'))
+    return
+  if item.data
+    socket.write item.data
+  queue.push item
+
 errorQueue = (message) ->
   while queue.length > 0
     item = queue.shift()
@@ -92,7 +100,7 @@ resetTimeoutCheck = ->
   , 5000
 
 expectHello = ->
-  queue.push
+  enqueue
     length: 7
     callback: (error, data) ->
       if error
@@ -104,8 +112,8 @@ expectHello = ->
         return
 
 checkModuleId = ->
-  socket.write 'Z'
-  queue.push
+  enqueue
+    data: 'Z'
     length: 2
     callback: (error, data) ->
       if error
@@ -117,11 +125,8 @@ checkModuleId = ->
         return
 
 getTemperature = (callback) ->
-  if !connected
-    callback?(new Error('not connected'))
-    return
-  socket.write 'a'
-  queue.push
+  enqueue
+    data: 'a'
     length: 2
     callback: (error, data) ->
       if error
@@ -133,10 +138,8 @@ getTemperature = (callback) ->
         callback?(null, temperature)
 
 getStates = (callback) ->
-  if !connected
-    callback?(new Error('not connected'))
-  socket.write '['
-  queue.push
+  enqueue
+    data: '['
     length: 1
     callback: (error, data) ->
       if error
@@ -154,7 +157,9 @@ setState = (relay, state) ->
   if relay < 0 || relay > 8
     throw new Error('relay out of range')
   cmd = if state then 100 else 110
-  socket.write String.fromCharCode(cmd + relay)
+  enqueue
+    data: String.fromCharCode(cmd + relay)
+    length: 0
 
 EventEmitter = require('events')
 class Device extends EventEmitter
