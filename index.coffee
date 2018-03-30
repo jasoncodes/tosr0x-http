@@ -80,6 +80,8 @@ enqueue = (item) ->
     return
   if item.data
     socket.write item.data
+  if queue.length == 0
+    resetTimeoutCheck()
   queue.push item
 
 errorQueue = (message) ->
