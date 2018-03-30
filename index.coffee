@@ -79,7 +79,6 @@ errorQueue = (message) ->
     item = queue.shift()
     item.callback?(new Error(message))
 
-
 timeoutTimer = null
 resetTimeoutCheck = ->
   if timeoutTimer
