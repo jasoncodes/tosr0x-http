@@ -1,6 +1,6 @@
 {
   "name": "tosr0x-http",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "bin": {
     "tosr0x-http": "bin/tosr0x-http"
   },
