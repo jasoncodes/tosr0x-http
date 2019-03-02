@@ -64,6 +64,11 @@ argv = yargs
     requiresArg: true
   )
   .implies('mqtt-host', 'mqtt-prefix')
+  .option('mqtt-interval'
+    describe: 'seconds between status/temperature checks'
+    type: 'number'
+    default: 10
+  )
   .argv
 
 bufferedData = null
@@ -367,7 +372,7 @@ if argv['mqtt-host']
     publishStatus('online', 'false')
   device.on 'temperature', (temperature) ->
     publishStatus "temperature", "#{temperature}"
-    idleTicksRemaining = 10
+    idleTicksRemaining = argv['mqtt-interval']
   device.on 'states', (states) ->
     for relay, state of states
       publishStatus "relay/#{relay}", "#{state}"
