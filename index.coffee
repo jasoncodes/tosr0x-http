@@ -69,6 +69,11 @@ argv = yargs
     type: 'number'
     default: 10
   )
+  .option('mqtt-changes'
+    describe: 'report temperature only when it changes'
+    type: 'boolean'
+    default: true
+  )
   .argv
 
 bufferedData = null
@@ -341,8 +346,8 @@ if argv['mqtt-host']
     console.log 'mqtt error'
 
   lastStatuses = {}
-  publishStatus = (key, value) ->
-    return if lastStatuses[key] is value
+  publishStatus = (key, value, always) ->
+    return if lastStatuses[key] is value && !always
     lastStatuses[key] = value
     client.publish(
       "#{argv['mqtt-prefix']}/status/#{key}"
@@ -355,7 +360,11 @@ if argv['mqtt-host']
     idleTicksRemaining -= 1
     if idleTicksRemaining <= 0 && connected
       getStates()
-      getTemperature()
+      getTemperature (error, temperature) ->
+        return if error
+        unless argv['mqtt-changes']
+          publishStatus "temperature", "#{temperature}", true
+          idleTicksRemaining = argv['mqtt-interval']
   , 1000
 
   client.on 'connect', ->
@@ -371,8 +380,9 @@ if argv['mqtt-host']
   device.on 'disconnect', ->
     publishStatus('online', 'false')
   device.on 'temperature', (temperature) ->
-    publishStatus "temperature", "#{temperature}"
-    idleTicksRemaining = argv['mqtt-interval']
+    if argv['mqtt-changes']
+      publishStatus "temperature", "#{temperature}"
+      idleTicksRemaining = argv['mqtt-interval']
   device.on 'states', (states) ->
     for relay, state of states
       publishStatus "relay/#{relay}", "#{state}"
