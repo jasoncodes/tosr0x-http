@@ -8,6 +8,9 @@ process = require('process')
 mqtt = require('mqtt')
 mqtt_regex = require('mqtt-regex')
 
+process.on 'SIGINT', ->
+  process.exit()
+
 argv = yargs
   .env('TOSR0X_HTTP')
   .usage('Usage: $0 [options]')
