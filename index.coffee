@@ -83,7 +83,7 @@ bufferedData = null
 queue = null
 
 initQueue = ->
-  bufferedData = new Buffer([])
+  bufferedData = Buffer.alloc(0)
   queue = []
 initQueue()
 
