@@ -5,9 +5,9 @@
     "tosr0x-http": "bin/tosr0x-http"
   },
   "dependencies": {
-    "body-parser": "^1.20.1",
+    "body-parser": "^1.20.4",
     "coffeescript": "^2.5.1",
-    "express": "^4.21.2",
+    "express": "^4.22.1",
     "lodash": "^4.17.21",
     "mqtt": "^4.2.6",
     "mqtt-regex": "^1.1.0",
