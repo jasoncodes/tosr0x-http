@@ -8,7 +8,7 @@
     "body-parser": "^1.20.4",
     "coffeescript": "^2.5.1",
     "express": "^4.22.1",
-    "lodash": "^4.17.23",
+    "lodash": "^4.18.1",
     "mqtt": "^4.2.6",
     "mqtt-regex": "^1.1.0",
     "yargs": "^16.2.0"
